@@ -1,6 +1,8 @@
 package com.example.flight_price_tracker.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +12,8 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 public class User implements UserDetails {
 
     @GeneratedValue(strategy = GenerationType.AUTO )
@@ -24,7 +28,9 @@ public class User implements UserDetails {
 
     @Column(name = "password", nullable = false)
     private String password;
+
     private boolean enabled;
+
     private LocalDateTime created;
 
     @Override
