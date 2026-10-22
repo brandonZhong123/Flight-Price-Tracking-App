@@ -15,7 +15,6 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 
 @Service
@@ -62,7 +61,7 @@ public class JWTService {
                 .compact();
     }
 
-    public boolean isTokenValid(String token) {
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         return extractExpiration(token).before(new Date());
     }
 
