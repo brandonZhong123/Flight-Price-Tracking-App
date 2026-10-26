@@ -1,5 +1,6 @@
 package com.example.flight_price_tracker.controller;
 
+import com.example.flight_price_tracker.dto.RegisterUserDto;
 import com.example.flight_price_tracker.model.User;
 import com.example.flight_price_tracker.service.AuthenticationService;
 import com.example.flight_price_tracker.service.JWTService;

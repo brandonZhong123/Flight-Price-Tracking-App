@@ -29,9 +29,19 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
+    private String verificationCode;
+
     private boolean enabled;
 
     private LocalDateTime created;
+
+    private LocalDateTime verificationCodeExpiresAt;
+
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
