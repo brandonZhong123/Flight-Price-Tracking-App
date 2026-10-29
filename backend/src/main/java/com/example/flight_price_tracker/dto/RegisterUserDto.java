@@ -1,8 +1,12 @@
 package com.example.flight_price_tracker.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public record RegisterUserDto(
-        String email,
-        String username,
-        String password
+        @NotBlank @Email String email,
+        @NotBlank @Size(min = 3, max = 50) String username,
+        @NotBlank @Size(min = 8, max = 72) String password
 ) {
 }
