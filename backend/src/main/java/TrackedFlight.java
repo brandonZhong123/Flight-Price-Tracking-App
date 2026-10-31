@@ -1,0 +1,3 @@
+@Entity
+public class TrackedFlight {
+}
