@@ -26,34 +26,25 @@ public class TrackedFlight {
     @Column(name = "origin", nullable = false)
     private String origin;
 
-    @Column(name = "price", nullable = false)
-    private final BigDecimal price;
-
-    @Column(name = "currency", nullable = false)
-    private Currency currency;
+    private BigDecimal targetPrice;
 
     @Column(name = "departure_date", nullable = false)
     private LocalDate departure_date;
 
-    private LocalDate arrival_date;
     private LocalDate return_date;
 
     @ManyToOne
     private User user;
 
-    public TrackedFlight(BigDecimal price,
+    public TrackedFlight(
                          String location,
                          String origin,
                          Currency currency,
                          LocalDate departure_date,
-                         LocalDate arrival_date,
                          LocalDate return_date) {
-        this.price = price;
         this.location = location;
         this.origin = origin;
-        this.currency = currency;
         this.departure_date = departure_date;
-        this.arrival_date = arrival_date;
         this.return_date = return_date;
     }
 }
