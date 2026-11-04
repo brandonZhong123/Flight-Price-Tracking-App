@@ -1,9 +1,9 @@
 package com.example.flight_price_tracker.controller;
 
-import com.example.flight_price_tracker.dto.LoginUserDto;
-import com.example.flight_price_tracker.dto.RegisterUserDto;
-import com.example.flight_price_tracker.dto.ResendVerificationDto;
-import com.example.flight_price_tracker.dto.VerifyUserDto;
+import com.example.flight_price_tracker.dto.user.LoginUserDto;
+import com.example.flight_price_tracker.dto.user.RegisterUserDto;
+import com.example.flight_price_tracker.dto.user.ResendVerificationDto;
+import com.example.flight_price_tracker.dto.user.VerifyUserDto;
 import com.example.flight_price_tracker.model.User;
 import com.example.flight_price_tracker.responses.LoginResponse;
 import com.example.flight_price_tracker.responses.UserResponse;
