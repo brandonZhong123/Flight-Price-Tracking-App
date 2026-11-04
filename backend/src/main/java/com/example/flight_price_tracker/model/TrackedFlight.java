@@ -1,50 +1,76 @@
 package com.example.flight_price_tracker.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Currency;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tracked_flights")
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TrackedFlight {
 
-    @Column(name = "location", nullable = false)
-    private String location;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "origin", nullable = false)
-    private String origin;
-
-    private BigDecimal targetPrice;
-
-    @Column(name = "departure_date", nullable = false)
-    private LocalDate departure_date;
-
-    private LocalDate return_date;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public TrackedFlight(
-                         String location,
+    // 3-letter IATA airport codes, e.g. "JFK"
+    @Column(nullable = false, length = 3)
+    private String origin;
+
+    @Column(nullable = false, length = 3)
+    private String destination;
+
+    @Column(nullable = false)
+    private LocalDate departureDate;
+
+    // Null for one-way trips
+    private LocalDate returnDate;
+
+    // ISO 4217 code, e.g. "USD"
+    @Column(nullable = false, length = 3)
+    private String currency;
+
+    // Optional: alert the user when the price drops to or below this
+    @Column(precision = 10, scale = 2)
+    private BigDecimal targetPrice;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    // Deleting a tracking deletes its price history
+    @OneToMany(mappedBy = "trackedFlight", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("checkedAt ASC")
+    private List<PriceSnapshot> snapshots = new ArrayList<>();
+
+    public TrackedFlight(User user,
                          String origin,
-                         Currency currency,
-                         LocalDate departure_date,
-                         LocalDate return_date) {
-        this.location = location;
-        this.origin = origin;
-        this.departure_date = departure_date;
-        this.return_date = return_date;
+                         String destination,
+                         LocalDate departureDate,
+                         LocalDate returnDate,
+                         String currency,
+                         BigDecimal targetPrice) {
+        this.user = user;
+        this.origin = origin.toUpperCase();
+        this.destination = destination.toUpperCase();
+        this.departureDate = departureDate;
+        this.returnDate = returnDate;
+        this.currency = currency.toUpperCase();
+        this.targetPrice = targetPrice;
     }
 }
