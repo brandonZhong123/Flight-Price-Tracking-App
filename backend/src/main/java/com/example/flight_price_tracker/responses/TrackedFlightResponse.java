@@ -1,5 +1,15 @@
 package com.example.flight_price_tracker.responses;
 
-public record TrackedFlightResponse() {
-    
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+public record TrackedFlightResponse(
+        String origin,
+        String destination,
+        LocalDate departureDate,
+        LocalDate returnDate,
+        String currency,
+        BigDecimal targetPrice
+) {
+
 }

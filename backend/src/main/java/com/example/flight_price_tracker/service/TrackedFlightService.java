@@ -2,6 +2,7 @@ package com.example.flight_price_tracker.service;
 
 import java.time.LocalDate;
 
+import com.example.flight_price_tracker.mapper.TrackedFlightMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,17 +28,10 @@ public class TrackedFlightService {
         if (dto.returnDate() != null && dto.returnDate().isBefore(dto.departureDate())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Return date must be before departure date");
         }
-        
-        TrackedFlight flight = new TrackedFlight(
-                user,
-                dto.origin(),
-                dto.destination(),
-                dto.departureDate(),
-                dto.returnDate(),
-                dto.currency(),
-                dto.targetPrice());
                
-        return trackedFlightRepository.save(flight);
+        return trackedFlightRepository.save(
+                TrackedFlightMapper
+                        .trackedFlightDtoToTrackedFlight(dto, user));
         
     }
 }
