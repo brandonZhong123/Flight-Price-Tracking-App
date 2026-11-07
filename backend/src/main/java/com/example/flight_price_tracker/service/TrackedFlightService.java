@@ -1,8 +1,11 @@
 package com.example.flight_price_tracker.service;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
+import com.example.flight_price_tracker.dto.trackedFlight.UpdateTrackedFlightDto;
 import com.example.flight_price_tracker.mapper.TrackedFlightMapper;
+import com.example.flight_price_tracker.responses.TrackedFlightResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -36,4 +39,39 @@ public class TrackedFlightService {
                         .trackedFlightDtoToTrackedFlight(dto, user));
         
     }
+
+    // Get tracked flight
+
+    public TrackedFlight getTrackedFlight(User user, Long id) {
+        TrackedFlight trackedFlight = trackedFlightRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tracked flight not found"));
+
+        if (!trackedFlight.getUser().equals(user)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User does not own this tracked flight");
+        }
+
+        return trackedFlight;
+    }
+
+    // Update Tracked Flight
+    public TrackedFlight updateTrackedFlight(User user, Long id, UpdateTrackedFlightDto dto) {
+        TrackedFlight trackedFlight = trackedFlightRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tracked flight not found"));
+        if (!trackedFlight.getUser().equals(user)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User does not own this tracked flight");
+        }
+
+        return trackedFlight;
+    }
+
+    public void deleteTrackedFlight(User user, Long id) {
+        TrackedFlight trackedFlight = trackedFlightRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tracked flight not found"));
+        if (!trackedFlight.getUser().equals(user)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User does not own this tracked flight");
+        }
+
+        trackedFlightRepository.deleteById(id);
+    }
+
 }
