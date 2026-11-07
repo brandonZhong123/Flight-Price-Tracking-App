@@ -10,6 +10,7 @@ public record TrackedFlightResponse(
         LocalDate returnDate,
         String currency,
         BigDecimal targetPrice
+
 ) {
 
 }

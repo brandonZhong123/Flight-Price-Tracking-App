@@ -29,7 +29,7 @@ public class TrackedFlightController {
     ) {
         TrackedFlight trackedFlight = trackedFlightService.createTrackedFlight(dto, user);
         TrackedFlightResponse res = TrackedFlightMapper.trackedFlightToRes(trackedFlight);
-        return new ResponseEntity<TrackedFlightResponse>(HttpStatus.CREATED);
+        return ResponseEntity.ok(res);
     }
 
 }

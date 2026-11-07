@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import com.example.flight_price_tracker.mapper.TrackedFlightMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.flight_price_tracker.dto.trackedFlight.TrackedFlightDto;
@@ -13,6 +14,7 @@ import com.example.flight_price_tracker.model.User;
 import com.example.flight_price_tracker.repository.TrackedFlightRepository;
 import com.example.flight_price_tracker.repository.UserRepository;
 
+@Service 
 public class TrackedFlightService {
     
 

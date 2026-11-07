@@ -15,6 +15,7 @@ public class TrackedFlightMapper {
                 trackedFlight.getReturnDate(),
                 trackedFlight.getCurrency(),
                 trackedFlight.getTargetPrice()
+                
         );
     }
 
