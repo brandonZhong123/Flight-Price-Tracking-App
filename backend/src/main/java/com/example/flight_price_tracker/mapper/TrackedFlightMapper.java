@@ -9,6 +9,7 @@ public class TrackedFlightMapper {
 
     public static TrackedFlightResponse trackedFlightToRes(TrackedFlight trackedFlight) {
         return new TrackedFlightResponse(
+                trackedFlight.getId(),
                 trackedFlight.getOrigin(),
                 trackedFlight.getDestination(),
                 trackedFlight.getDepartureDate(),

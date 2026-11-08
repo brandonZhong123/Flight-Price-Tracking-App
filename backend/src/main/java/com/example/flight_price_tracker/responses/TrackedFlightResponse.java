@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record TrackedFlightResponse(
+        Long id,
         String origin,
         String destination,
         LocalDate departureDate,

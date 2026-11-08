@@ -48,7 +48,7 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
         // Origins of the frontend (Vite dev server runs on 5173 by default).
         configuration.setAllowedOrigins(List.of("https://backend.com", "http://localhost:5173"));
-        configuration.setAllowedMethods(List.of("GET", "PUT", "POST", "DELETE"));
+        configuration.setAllowedMethods(List.of("GET", "PUT", "PATCH", "POST", "DELETE"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
