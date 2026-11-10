@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.*;
+
 @RestController
 @RequestMapping("/tracked-flights")
 public class TrackedFlightController {
@@ -45,6 +47,17 @@ public class TrackedFlightController {
     ) {
         TrackedFlight trackedFlight = trackedFlightService.getTrackedFlight(user, id);
         return ResponseEntity.ok(TrackedFlightMapper.trackedFlightToRes(trackedFlight));
+    }
+
+    @GetMapping("/my-tracked-flights")
+    public ResponseEntity<List<TrackedFlightResponse>> getUserTrackedFlights(
+            @AuthenticationPrincipal User user
+    ) {
+        List<TrackedFlight> trackedFlights = trackedFlightService.getUserTrackedFlights(user);
+        List<TrackedFlightResponse> trackedFlightResponses = trackedFlights.stream()
+                .map(TrackedFlightMapper::trackedFlightToRes)
+                .toList();
+        return ResponseEntity.ok(trackedFlightResponses);
     }
 
     @PatchMapping("/{id}")
