@@ -73,4 +73,7 @@ public class TrackedFlight {
         this.currency = currency.toUpperCase();
         this.targetPrice = targetPrice;
     }
+
+    public Object getCure() {
+    }
 }
