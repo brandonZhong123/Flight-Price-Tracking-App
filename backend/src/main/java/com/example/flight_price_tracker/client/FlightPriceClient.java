@@ -1,13 +1,17 @@
 package com.example.flight_price_tracker.client;
 
+import com.example.flight_price_tracker.dto.api.SerpApiResponse;
 import com.example.flight_price_tracker.model.TrackedFlight;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.stream.Stream;
 
 @Component
 public class FlightPriceClient {
@@ -25,8 +29,9 @@ public class FlightPriceClient {
 
     public Optional<BigDecimal> getLowestPrice(TrackedFlight flight) {
         boolean roundTrip = flight.getReturnDate() != null;
-        String response = restClient.get()
-                .uri(uriBuilder -> { uriBuilder.path("/search")
+        SerpApiResponse response = restClient.get()
+                .uri(uriBuilder -> {
+                    uriBuilder.path("/search")
                         .queryParam("api_key", apiKey)
                         .queryParam("departure_id", flight.getOrigin())
                         .queryParam("arrival_id", flight.getDestination())
@@ -41,6 +46,22 @@ public class FlightPriceClient {
 
                     return uriBuilder.build();
                 })
+                .retrieve()
+                .body(SerpApiResponse.class);
+        if (response == null) {
+            throw new IllegalStateException("SerpApi returned an empty response");
+        }
+
+        if (response.error() != null) {
+            throw new IllegalStateException("SerpApi search failed: " + response.error());
+        }
+
+        return Stream.of(response.bestFlights(), response.otherFlights())
+                .filter(Objects::nonNull)
+                .flatMap(List::stream)
+                .map(SerpApiResponse.FlightOption::price)
+                .filter(Objects::nonNull)
+                .min(BigDecimal::compareTo);
     }
 
 }
