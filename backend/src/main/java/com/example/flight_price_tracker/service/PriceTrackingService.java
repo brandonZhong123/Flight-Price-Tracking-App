@@ -17,6 +17,7 @@ import java.util.Optional;
 
 
 @Service
+@Slf4j
 public class PriceTrackingService {
 
     private final FlightPriceClient flightPriceClient;

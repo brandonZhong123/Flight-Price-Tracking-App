@@ -14,6 +14,6 @@ public record SerpApiResponse(
         String error
         ) {
 
-    @JsonIgnoreProperties(ignoreUnknown = false)
+    @JsonIgnoreProperties(ignoreUnknown = true)
             public record FlightOption(BigDecimal price) {}
 }

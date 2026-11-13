@@ -36,9 +36,9 @@ public class FlightPriceClient {
                         .queryParam("departure_id", flight.getOrigin())
                         .queryParam("arrival_id", flight.getDestination())
                         .queryParam("outbound_date", flight.getDepartureDate())
-                        .queryParam("currency", flight.getCure())
+                        .queryParam("currency", flight.getCurrency())
                         .queryParam("type", roundTrip ? 1:2)
-                        .queryParam("adults", 1);
+                        .queryParam("adults", 1).queryParam("engine", "google_flights");
 
                     if (roundTrip) {
                         uriBuilder.queryParam("return_date", flight.getReturnDate());
