@@ -1,5 +1,7 @@
 package com.example.flight_price_tracker.service;
 
+import com.example.flight_price_tracker.model.PriceSnapshot;
+import com.example.flight_price_tracker.repository.PriceSnapshotRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +21,10 @@ public class TrackedFlightService {
 
     private final TrackedFlightRepository trackedFlightRepository;
 
-    public TrackedFlightService(TrackedFlightRepository trackedFlightRepository) {
+    public TrackedFlightService(
+            TrackedFlightRepository trackedFlightRepository,
+            PriceSnapshotRepository priceSnapshotRepository
+    ) {
         this.trackedFlightRepository = trackedFlightRepository;
     }
 
@@ -54,6 +59,7 @@ public class TrackedFlightService {
         return trackedFlight;
     }
 
+
     // Delete tracked flight (its price snapshots are removed by the cascade)
     @Transactional
     public void deleteTrackedFlight(User user, Long id) {
@@ -66,4 +72,5 @@ public class TrackedFlightService {
         return trackedFlightRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tracked flight not found"));
     }
+
 }
