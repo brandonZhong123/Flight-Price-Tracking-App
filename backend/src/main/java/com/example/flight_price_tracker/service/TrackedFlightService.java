@@ -48,7 +48,7 @@ public class TrackedFlightService {
 
     @Transactional(readOnly = true)
     public List<TrackedFlight> getUserTrackedFlights(User user) {
-        return trackedFlightRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
+        return trackedFlightRepository.findByUserIdOrderByCreatedAtAsc(user.getId());
     }
 
     // Update the target price. No save() needed: Hibernate writes the change on commit.

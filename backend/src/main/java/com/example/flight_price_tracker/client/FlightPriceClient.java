@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.stream.Stream;
 
 @Component
@@ -19,13 +18,9 @@ public class FlightPriceClient {
     @Value("${security.serp.api.key}")
     private String apiKey;
 
-    private final RestClient restClient;
-
-    public FlightPriceClient(RestClient.Builder builder) {
-        this.restClient = builder.
-                baseUrl("https://serpapi.com").
-                build();
-    }
+    // Built directly rather than injecting RestClient.Builder, which is only
+    // auto-configured when spring-boot-starter-web is on the classpath.
+    private final RestClient restClient = RestClient.create("https://serpapi.com");
 
     public Optional<BigDecimal> getLowestPrice(TrackedFlight flight) {
         boolean roundTrip = flight.getReturnDate() != null;

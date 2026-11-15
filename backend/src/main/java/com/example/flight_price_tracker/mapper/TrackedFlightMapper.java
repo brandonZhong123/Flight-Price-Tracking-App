@@ -1,8 +1,10 @@
 package com.example.flight_price_tracker.mapper;
 
 import com.example.flight_price_tracker.dto.trackedFlight.TrackedFlightDto;
+import com.example.flight_price_tracker.model.PriceSnapshot;
 import com.example.flight_price_tracker.model.TrackedFlight;
 import com.example.flight_price_tracker.model.User;
+import com.example.flight_price_tracker.responses.PriceSnapshotResponse;
 import com.example.flight_price_tracker.responses.TrackedFlightResponse;
 
 public class TrackedFlightMapper {
@@ -30,5 +32,9 @@ public class TrackedFlightMapper {
                 dto.currency(),
                 dto.targetPrice()
         );
+    }
+
+    public static PriceSnapshotResponse priceSnapshotToRes(PriceSnapshot priceSnapshot) {
+        return new PriceSnapshotResponse(priceSnapshot.getCheckedAt(), priceSnapshot.getPrice());
     }
 }

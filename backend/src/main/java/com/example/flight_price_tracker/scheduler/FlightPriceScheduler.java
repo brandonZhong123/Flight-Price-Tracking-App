@@ -38,7 +38,7 @@ public class FlightPriceScheduler {
             }
 
             try {
-                priceTrackingService.savePriceSnapshot(trackedFlight);
+                priceTrackingService.savePriceSnapshot(trackedFlight.getId());
             } catch(RuntimeException e) {
                 log.warn("Price check failed for tracked flight {} ({})",
                         trackedFlight.getId(), e.getClass().getSimpleName());

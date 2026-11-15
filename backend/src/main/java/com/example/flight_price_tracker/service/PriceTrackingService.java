@@ -29,22 +29,26 @@ public class PriceTrackingService {
     private final FlightPriceClient flightPriceClient;
     private final PriceSnapshotRepository priceSnapshotRepository;
     private final EmailService emailService;
+    private final TrackedFlightRepository trackedFlightRepository;
 
 
     public PriceTrackingService(
             FlightPriceClient flightPriceClient,
             PriceSnapshotRepository priceSnapshotRepository,
-            EmailService emailService
+            EmailService emailService,
+            TrackedFlightRepository trackedFlightRepository
     ) {
         this.flightPriceClient = flightPriceClient;
         this.priceSnapshotRepository = priceSnapshotRepository;
         this.emailService = emailService;
+        this.trackedFlightRepository = trackedFlightRepository;
     }
 
 
     @Transactional
-    public Optional<PriceSnapshot> savePriceSnapshot(TrackedFlight flight) {
+    public Optional<PriceSnapshot> savePriceSnapshot(Long flightId) {
         Optional<BigDecimal> price;
+        TrackedFlight flight = trackedFlightRepository.findById(flightId).orElseThrow();
 
         try {
             price = flightPriceClient.getLowestPrice(flight);
@@ -54,7 +58,6 @@ public class PriceTrackingService {
 
             return Optional.empty();
         }
-
 
         return price.map(value -> {
             PriceSnapshot snapshot = new PriceSnapshot(
@@ -66,8 +69,7 @@ public class PriceTrackingService {
             if (flight.getTargetPrice() != null && value.compareTo(flight.getTargetPrice()) <= 0) {
                 sendPriceUpdateEmail(flight.getUser(), flight, value);
             }
-
-            return snapshot;
+            return priceSnapshotRepository.save(snapshot);
 
         });
     }

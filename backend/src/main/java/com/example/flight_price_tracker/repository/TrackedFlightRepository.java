@@ -11,5 +11,5 @@ public interface TrackedFlightRepository extends CrudRepository<TrackedFlight, L
 
     // Matches only if the flight belongs to the given user (WHERE id = ? AND user_id = ?)
     Optional<TrackedFlight> findByIdAndUserId(Long id, Long userId);
-    List<TrackedFlight> findByUserIdOrderByCreatedAtDesc(Long userId);
+    List<TrackedFlight> findByUserIdOrderByCreatedAtAsc(Long userId);
 }

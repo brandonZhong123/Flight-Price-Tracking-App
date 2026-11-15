@@ -6,6 +6,7 @@ import com.example.flight_price_tracker.mapper.TrackedFlightMapper;
 import com.example.flight_price_tracker.model.PriceSnapshot;
 import com.example.flight_price_tracker.model.TrackedFlight;
 import com.example.flight_price_tracker.model.User;
+import com.example.flight_price_tracker.responses.PriceSnapshotResponse;
 import com.example.flight_price_tracker.responses.TrackedFlightResponse;
 import com.example.flight_price_tracker.service.PriceTrackingService;
 import com.example.flight_price_tracker.service.TrackedFlightService;
@@ -81,13 +82,16 @@ public class TrackedFlightController {
     }
 
     @GetMapping("/{id}/snapshots")
-    public ResponseEntity<List<PriceSnapshot>> getUserFlightPriceSnapshot(
-            @RequestParam Long id,
+    public ResponseEntity<List<PriceSnapshotResponse>> getUserFlightPriceSnapshot(
+            @PathVariable Long id,
             @AuthenticationPrincipal User user
     ) {
         TrackedFlight trackedFlight = trackedFlightService.getTrackedFlight(user, id);
-        List<PriceSnapshot> list = priceTrackingService.getAllUserPriceSnapshots(trackedFlight);
-        return ResponseEntity.ok(list);
+        List<PriceSnapshot> priceSnapshots = priceTrackingService.getAllUserPriceSnapshots(trackedFlight);
+        List<PriceSnapshotResponse> priceSnapshotResponses = priceSnapshots.stream()
+                .map(TrackedFlightMapper::priceSnapshotToRes)
+                .toList();
+        return ResponseEntity.ok(priceSnapshotResponses);
     }
 
 
