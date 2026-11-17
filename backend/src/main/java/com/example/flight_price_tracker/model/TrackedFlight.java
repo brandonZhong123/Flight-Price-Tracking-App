@@ -49,6 +49,13 @@ public class TrackedFlight {
     @Column(precision = 10, scale = 2)
     private BigDecimal targetPrice;
 
+    // The price we last emailed an alert for. Null means no outstanding alert,
+    // so the next at-or-below-target price triggers an email. Reset to null when
+    // the price climbs back above target or the user changes the target, so a
+    // later drop alerts again instead of staying silent.
+    @Column(precision = 10, scale = 2)
+    private BigDecimal lastAlertedPrice;
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant createdAt;

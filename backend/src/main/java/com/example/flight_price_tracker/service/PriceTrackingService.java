@@ -66,12 +66,39 @@ public class PriceTrackingService {
                     value
             );
 
-            if (flight.getTargetPrice() != null && value.compareTo(flight.getTargetPrice()) <= 0) {
-                sendPriceUpdateEmail(flight.getUser(), flight, value);
-            }
+            maybeAlert(flight, value);
+
             return priceSnapshotRepository.save(snapshot);
 
         });
+    }
+
+    /**
+     * Sends a price-drop email only when the state actually changes, so the user
+     * isn't emailed on every check while the price sits below target.
+     *
+     * - At or below target, and we haven't alerted yet (or an earlier alert was
+     *   cleared): send, and remember the price we alerted at.
+     * - Still at or below target but we already alerted: stay silent.
+     * - Back above target: clear the record so the next drop alerts again.
+     *
+     * The flight is managed in this transaction, so the lastAlertedPrice change
+     * is written on commit without an explicit save.
+     */
+    private void maybeAlert(TrackedFlight flight, BigDecimal price) {
+        BigDecimal target = flight.getTargetPrice();
+        if (target == null) {
+            return;
+        }
+
+        boolean atOrBelowTarget = price.compareTo(target) <= 0;
+
+        if (atOrBelowTarget && flight.getLastAlertedPrice() == null) {
+            sendPriceUpdateEmail(flight.getUser(), flight, price);
+            flight.setLastAlertedPrice(price);
+        } else if (!atOrBelowTarget && flight.getLastAlertedPrice() != null) {
+            flight.setLastAlertedPrice(null);
+        }
     }
 
     @Transactional

@@ -56,6 +56,9 @@ public class TrackedFlightService {
     public TrackedFlight updateTrackedFlight(User user, Long id, UpdateTrackedFlightDto dto) {
         TrackedFlight trackedFlight = findOwnedOrThrow(user, id);
         trackedFlight.setTargetPrice(dto.targetPrice());
+        // Re-arm the alert: a new target should be able to fire even if we'd
+        // already alerted against the old one.
+        trackedFlight.setLastAlertedPrice(null);
         return trackedFlight;
     }
 
