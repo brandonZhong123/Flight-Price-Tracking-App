@@ -141,6 +141,7 @@ public class AuthenticationService {
                 provided.getBytes(StandardCharsets.UTF_8));
     }
 
+
     private static String normalizeEmail(String email) {
         return email == null ? null : email.trim().toLowerCase();
     }

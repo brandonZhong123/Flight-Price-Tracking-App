@@ -28,7 +28,7 @@ public class FlightPriceScheduler {
         this.priceTrackingService = priceTrackingService;
     }
 
-    @Scheduled(fixedDelay = 6, timeUnit = TimeUnit.HOURS)
+    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.DAYS)
     public void checkPrices() {
         LocalDate today = LocalDate.now();
 
