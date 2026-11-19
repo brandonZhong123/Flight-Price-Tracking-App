@@ -1,8 +1,6 @@
 package com.example.flight_price_tracker.scheduler;
 
-import com.example.flight_price_tracker.model.PriceSnapshot;
 import com.example.flight_price_tracker.model.TrackedFlight;
-import com.example.flight_price_tracker.repository.PriceSnapshotRepository;
 import com.example.flight_price_tracker.repository.TrackedFlightRepository;
 import com.example.flight_price_tracker.service.PriceTrackingService;
 
@@ -28,18 +26,14 @@ public class FlightPriceScheduler {
         this.priceTrackingService = priceTrackingService;
     }
 
-    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.DAYS)
+    // initialDelay keeps the job from firing on startup, which would spend API
+    // quota on every restart. First run is one day after boot, then daily.
+    @Scheduled(initialDelay = 1, fixedDelay = 1, timeUnit = TimeUnit.DAYS)
     public void checkPrices() {
-        LocalDate today = LocalDate.now();
-
-        for (TrackedFlight trackedFlight: trackedFlightRepository.findAll()) {
-            if (trackedFlight.getDepartureDate().isBefore(today)) {
-                continue;
-            }
-
+        for (TrackedFlight trackedFlight : trackedFlightRepository.findByDepartureDateGreaterThanEqual(LocalDate.now())) {
             try {
                 priceTrackingService.savePriceSnapshot(trackedFlight.getId());
-            } catch(RuntimeException e) {
+            } catch (RuntimeException e) {
                 log.warn("Price check failed for tracked flight {} ({})",
                         trackedFlight.getId(), e.getClass().getSimpleName());
             }
