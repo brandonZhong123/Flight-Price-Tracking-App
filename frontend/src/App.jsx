@@ -1,10 +1,15 @@
+import { useState } from 'react'
+import Login from './authentication/Login'
+import Register from './authentication/Register'
+
 function App() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
-      <h1 className="text-4xl font-bold text-blue-400">
-        Hello Tailwind!
-      </h1>
-    </div>
+  // No router yet, so a simple toggle between the two auth screens.
+  const [view, setView] = useState('login')
+
+  return view === 'login' ? (
+    <Login onSwitchToRegister={() => setView('register')} />
+  ) : (
+    <Register onSwitchToLogin={() => setView('login')} />
   )
 }
 

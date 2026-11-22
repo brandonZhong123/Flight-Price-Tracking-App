@@ -4,4 +4,11 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  // Forward API calls to the Spring backend in dev, so the browser sees
+  // same-origin requests and we avoid CORS during development.
+  server: {
+    proxy: {
+      '/auth': 'http://localhost:8080',
+    },
+  },
 })
