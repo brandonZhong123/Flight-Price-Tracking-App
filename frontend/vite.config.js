@@ -9,6 +9,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/auth': 'http://localhost:8080',
+      '/tracked-flights': 'http://localhost:8080',
     },
   },
 })

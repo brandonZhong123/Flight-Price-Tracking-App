@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { login } from './api'
 
-export default function Login({ onSwitchToRegister }) {
+export default function Login({ onSwitchToRegister, onLoggedIn }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -14,7 +14,7 @@ export default function Login({ onSwitchToRegister }) {
     try {
       const res = await login(email, password)
       localStorage.setItem('token', res.token)
-      // TODO: route to the dashboard once it exists.
+      onLoggedIn()
     } catch (err) {
       setError(err.message)
     } finally {

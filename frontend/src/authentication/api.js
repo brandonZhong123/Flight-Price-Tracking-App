@@ -31,3 +31,50 @@ export const signup = (email, username, password) =>
 
 export const verify = (email, verificationCode) =>
   post('/auth/verify', { email, verificationCode })
+
+// --- Authenticated requests -------------------------------------------------
+// Everything under /tracked-flights needs the JWT in the Authorization header.
+
+function authHeaders() {
+  const token = localStorage.getItem('token')
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
+async function request(path, options = {}) {
+  const res = await fetch(path, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(),
+      ...options.headers,
+    },
+  })
+
+  if (res.status === 204) return null
+
+  let data = null
+  try {
+    data = await res.json()
+  } catch {
+    // No JSON body.
+  }
+
+  if (!res.ok) {
+    const message = data?.detail || data?.message || `Request failed (${res.status})`
+    throw new Error(message)
+  }
+
+  return data
+}
+
+export const getTrackedFlights = () =>
+  request('/tracked-flights/my-tracked-flights')
+
+export const createTrackedFlight = (flight) =>
+  request('/tracked-flights/create', {
+    method: 'POST',
+    body: JSON.stringify(flight),
+  })
+
+export const deleteTrackedFlight = (id) =>
+  request(`/tracked-flights/${id}`, { method: 'DELETE' })
