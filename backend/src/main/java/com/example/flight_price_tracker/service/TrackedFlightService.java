@@ -1,7 +1,5 @@
 package com.example.flight_price_tracker.service;
 
-import com.example.flight_price_tracker.model.PriceSnapshot;
-import com.example.flight_price_tracker.repository.PriceSnapshotRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,12 +18,14 @@ import java.util.List;
 public class TrackedFlightService {
 
     private final TrackedFlightRepository trackedFlightRepository;
+    private final PriceTrackingService priceTrackingService;
 
     public TrackedFlightService(
             TrackedFlightRepository trackedFlightRepository,
-            PriceSnapshotRepository priceSnapshotRepository
+            PriceTrackingService priceTrackingService
     ) {
         this.trackedFlightRepository = trackedFlightRepository;
+        this.priceTrackingService = priceTrackingService;
     }
 
     // Create new Tracked Flight
@@ -34,8 +34,16 @@ public class TrackedFlightService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Return date must be on or after departure date");
         }
 
-        return trackedFlightRepository.save(
+        TrackedFlight flight = trackedFlightRepository.save(
                 TrackedFlightMapper.trackedFlightDtoToTrackedFlight(dto, user));
+
+        // Fetch an initial price so the user sees a number right away instead of
+        // waiting for the daily scheduler. Done after the flight is saved and in
+        // its own transaction, so a slow or failing SerpApi call can't roll back
+        // the creation; savePriceSnapshot already swallows fetch errors.
+        priceTrackingService.savePriceSnapshot(flight.getId());
+
+        return flight;
     }
 
     // Get tracked flight
