@@ -94,5 +94,21 @@ public class TrackedFlightController {
         return ResponseEntity.ok(priceSnapshotResponses);
     }
 
+    // Trigger a price fetch on demand instead of waiting for the daily scheduler.
+    // Useful for testing the price path. getTrackedFlight enforces ownership
+    // (404 if the flight isn't the caller's). Returns the new snapshot, or 204
+    // if the fetch found no price.
+    @PostMapping("/{id}/check")
+    public ResponseEntity<PriceSnapshotResponse> checkPriceNow(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User user
+    ) {
+        trackedFlightService.getTrackedFlight(user, id);
+        return priceTrackingService.savePriceSnapshot(id)
+                .map(TrackedFlightMapper::priceSnapshotToRes)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
+    }
+
 
 }
