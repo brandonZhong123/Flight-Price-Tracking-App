@@ -4,6 +4,7 @@ import {
   createTrackedFlight,
   deleteTrackedFlight,
 } from './authentication/api'
+import FlightHistory from './FlightHistory'
 
 const EMPTY_FORM = {
   origin: '',
@@ -20,6 +21,7 @@ export default function Home({ onLogout }) {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [expandedId, setExpandedId] = useState(null)
 
   async function load() {
     setError('')
@@ -193,30 +195,39 @@ export default function Home({ onLogout }) {
             </p>
           ) : (
             <ul className="space-y-3">
-              {flights.map((f) => (
-                <li
-                  key={f.id}
-                  className="flex items-center justify-between bg-gray-800 rounded-lg px-4 py-3"
-                >
-                  <div>
-                    <p className="font-medium">
-                      {f.origin} → {f.destination}
-                    </p>
-                    <p className="text-sm text-gray-400">
-                      {f.departureDate}
-                      {f.returnDate ? ` – ${f.returnDate}` : ' (one way)'}
-                      {f.targetPrice != null &&
-                        ` · target ${f.targetPrice} ${f.currency}`}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleDelete(f.id)}
-                    className="text-sm text-red-400 hover:text-red-300"
-                  >
-                    Delete
-                  </button>
-                </li>
-              ))}
+              {flights.map((f) => {
+                const expanded = expandedId === f.id
+                return (
+                  <li key={f.id} className="bg-gray-800 rounded-lg px-4 py-3">
+                    <div className="flex items-center justify-between">
+                      <button
+                        onClick={() => setExpandedId(expanded ? null : f.id)}
+                        className="text-left flex-1"
+                      >
+                        <p className="font-medium">
+                          <span className="text-gray-500 mr-2">
+                            {expanded ? '▾' : '▸'}
+                          </span>
+                          {f.origin} → {f.destination}
+                        </p>
+                        <p className="text-sm text-gray-400 ml-5">
+                          {f.departureDate}
+                          {f.returnDate ? ` – ${f.returnDate}` : ' (one way)'}
+                          {f.targetPrice != null &&
+                            ` · target ${f.targetPrice} ${f.currency}`}
+                        </p>
+                      </button>
+                      <button
+                        onClick={() => handleDelete(f.id)}
+                        className="text-sm text-red-400 hover:text-red-300 ml-4"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                    {expanded && <FlightHistory flight={f} />}
+                  </li>
+                )
+              })}
             </ul>
           )}
         </section>

@@ -78,3 +78,11 @@ export const createTrackedFlight = (flight) =>
 
 export const deleteTrackedFlight = (id) =>
   request(`/tracked-flights/${id}`, { method: 'DELETE' })
+
+export const getSnapshots = (id) =>
+  request(`/tracked-flights/${id}/snapshots`)
+
+// Triggers an immediate price fetch. Returns the new snapshot, or null (204)
+// if no price was found.
+export const checkPriceNow = (id) =>
+  request(`/tracked-flights/${id}/check`, { method: 'POST' })
